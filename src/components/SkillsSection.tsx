@@ -22,47 +22,47 @@ const skillsData: SkillCategory[] = [
   {
     id: 1,
     title: "Frontend Development",
-    icon: <Code className="h-6 w-6 text-blue-600" />,
+    icon: <Code className="h-6 w-6 text-blue-600 dark:text-blue-500" />,
     skills: ["HTML", "CSS", "JavaScript", "React.js", "Responsive Design"],
   },
   {
     id: 2,
     title: "Backend Development",
-    icon: <Server className="h-6 w-6 text-green-600" />,
+    icon: <Server className="h-6 w-6 text-green-600 dark:text-green-500" />,
     skills: ["PHP", "MySQL", "Firebase", "MongoDB", "REST APIs"],
   },
   {
     id: 3,
     title: "UI/UX Design",
-    icon: <Palette className="h-6 w-6 text-purple-600" />,
+    icon: <Palette className="h-6 w-6 text-purple-600 dark:text-purple-500" />,
     skills: ["Figma", "Canva", "Adobe XD", "Wireframing", "Prototyping"],
   },
   {
     id: 4,
     title: "Database Management",
-    icon: <Database className="h-6 w-6 text-orange-600" />,
+    icon: <Database className="h-6 w-6 text-orange-600 dark:text-orange-500" />,
     skills: ["MySQL", "MongoDB", "Firebase", "Data Modeling", "Query Optimization"],
   },
   {
     id: 5,
     title: "Version Control",
-    icon: <GitBranch className="h-6 w-6 text-gray-600" />,
+    icon: <GitBranch className="h-6 w-6 text-gray-600 dark:text-gray-400" />,
     skills: ["Git", "Github", "Collaborative Development", "CI/CD"],
   },
   {
     id: 6,
     title: "Development Tools",
-    icon: <Layers className="h-6 w-6 text-red-600" />,
+    icon: <Layers className="h-6 w-6 text-red-600 dark:text-red-500" />,
     skills: ["VS Code", "Netlify", "Serverbyt Hosting", "API Integration"],
   },
 ];
 
 const SkillsSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, threshold: 0.1 });
+  const isInView = useInView(ref, { once: true });
 
   return (
-    <section id="skills" className="section">
+    <section id="skills" className="section bg-gray-50 dark:bg-gray-950">
       <div className="section-inner" ref={ref}>
         <div className="mb-16 text-center max-w-3xl mx-auto">
           <span className={cn(
@@ -92,7 +92,7 @@ const SkillsSection = () => {
               className={cn(
                 "p-6 rounded-xl glass-card transition-all duration-700 hover:shadow-lg",
                 isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
-                `delay-[${(index + 1) * 150}ms]`
+                `animation-delay-${Math.min((index + 1) * 150, 1000)}ms`
               )}
             >
               <div className="flex items-center mb-4">
@@ -104,7 +104,7 @@ const SkillsSection = () => {
               <ul className="space-y-2">
                 {category.skills.map((skill) => (
                   <li key={skill} className="flex items-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mr-2" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-500 mr-2" />
                     <span className="text-gray-700 dark:text-gray-300">{skill}</span>
                   </li>
                 ))}

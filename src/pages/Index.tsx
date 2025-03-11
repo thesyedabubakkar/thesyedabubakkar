@@ -1,5 +1,4 @@
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import ProjectsSection from "../components/ProjectsSection";
@@ -7,10 +6,26 @@ import SkillsSection from "../components/SkillsSection";
 import ExperienceSection from "../components/ExperienceSection";
 import ContactSection from "../components/ContactSection";
 import Footer from "../components/Footer";
+import { Moon, Sun } from "lucide-react";
 
 const Index = () => {
+  const [theme, setTheme] = useState<"light" | "dark">(
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  );
+
   useEffect(() => {
-    // Smooth scroll behavior for hash links
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  useEffect(() => {
     const handleHashLinkClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       const isHashLink = target.tagName === "A" && target.getAttribute("href")?.startsWith("#");
@@ -36,7 +51,6 @@ const Index = () => {
     };
   }, []);
   
-  // Add framer-motion animation setup
   useEffect(() => {
     const handleScroll = () => {
       const reveals = document.querySelectorAll(".reveal");
@@ -61,8 +75,15 @@ const Index = () => {
   }, []);
   
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-gray-950 transition-colors duration-300">
       <Header />
+      <button
+        onClick={toggleTheme}
+        className="fixed bottom-5 right-5 z-50 p-3 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors shadow-lg"
+        aria-label="Toggle dark mode"
+      >
+        {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+      </button>
       <main className="flex-1">
         <HeroSection />
         <ProjectsSection />
