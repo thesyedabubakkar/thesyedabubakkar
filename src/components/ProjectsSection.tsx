@@ -48,20 +48,33 @@ const projects: Project[] = [
 
 const ProjectsSection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, threshold: 0.1 });
+  const isInView = useInView(ref, { once: true });
+  
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.5,
+        ease: [0.25, 0.1, 0.25, 1]
+      }
+    })
+  };
   
   return (
-    <section id="projects" className="section bg-gray-50 dark:bg-gray-900">
+    <section id="projects" className="section bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
       <div className="section-inner" ref={ref}>
         <div className="mb-16 text-center max-w-3xl mx-auto">
           <span className={cn(
-            "inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 dark:bg-blue-950 dark:text-blue-400 rounded-full mb-4 transition-all duration-500",
+            "inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 dark:bg-blue-950/50 dark:text-blue-400 rounded-full mb-4 backdrop-blur-sm",
             isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           )}>
             My Work
           </span>
           <h2 className={cn(
-            "text-3xl md:text-4xl font-bold mb-6 transition-all duration-700",
+            "text-3xl md:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-blue-100 dark:to-white",
             isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           )}>
             Recent Projects
@@ -76,64 +89,69 @@ const ProjectsSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
-            <Card 
+            <motion.div
               key={project.id}
-              className={cn(
-                "overflow-hidden glass-card border-0 transition-all duration-700",
-                isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
-                `delay-[${(index + 1) * 200}ms]`
-              )}
+              custom={index}
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
+              variants={cardVariants}
+              className="h-full"
             >
-              <div className="relative h-48 overflow-hidden bg-gray-200 dark:bg-gray-800 transition-transform duration-500 hover:scale-[1.02]">
-                <img 
-                  src={project.image} 
-                  alt={project.title}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute top-3 right-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium">
-                  {project.year}
+              <Card className="overflow-hidden glass-card border-0 h-full hover:shadow-xl transition-all duration-500 hover:-translate-y-2 bg-white/80 dark:bg-gray-900/50 backdrop-blur-lg">
+                <div className="relative h-48 overflow-hidden bg-gray-200 dark:bg-gray-800">
+                  <motion.img 
+                    src={project.image} 
+                    alt={project.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                  <div className="absolute top-3 right-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium">
+                    {project.year}
+                  </div>
                 </div>
-              </div>
-              <div className="p-5">
-                <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag) => (
-                    <span 
-                      key={tag} 
-                      className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <div className="p-5">
+                  <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                    {project.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {project.tags.map((tag) => (
+                      <span 
+                        key={tag} 
+                        className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-800/80 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-3 mt-4">
+                    {project.liveLink && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-sm bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 shadow-md shadow-blue-500/20"
+                        onClick={() => window.open(project.liveLink, "_blank")}
+                      >
+                        View Live
+                        <ExternalLink className="ml-2 h-3 w-3" />
+                      </Button>
+                    )}
+                    {project.githubLink && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                        onClick={() => window.open(project.githubLink, "_blank")}
+                      >
+                        <Github className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 mt-4">
-                  {project.liveLink && (
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="text-sm"
-                      onClick={() => window.open(project.liveLink, "_blank")}
-                    >
-                      View Live
-                      <ExternalLink className="ml-2 h-3 w-3" />
-                    </Button>
-                  )}
-                  {project.githubLink && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => window.open(project.githubLink, "_blank")}
-                    >
-                      <Github className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </Card>
+              </Card>
+            </motion.div>
           ))}
         </div>
       </div>

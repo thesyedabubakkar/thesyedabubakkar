@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+
+import { useEffect } from "react";
 import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import ProjectsSection from "../components/ProjectsSection";
@@ -7,23 +8,11 @@ import ExperienceSection from "../components/ExperienceSection";
 import ContactSection from "../components/ContactSection";
 import Footer from "../components/Footer";
 import { Moon, Sun } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "@/hooks/useTheme";
 
 const Index = () => {
-  const [theme, setTheme] = useState<"light" | "dark">(
-    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-  );
-
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleHashLinkClick = (event: MouseEvent) => {
@@ -75,15 +64,34 @@ const Index = () => {
   }, []);
   
   return (
-    <div className="flex min-h-screen flex-col bg-white dark:bg-gray-950 transition-colors duration-300">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-gray-950 transition-colors duration-500">
       <Header />
-      <button
-        onClick={toggleTheme}
-        className="fixed bottom-5 right-5 z-50 p-3 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors shadow-lg"
-        aria-label="Toggle dark mode"
-      >
-        {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
-      </button>
+      
+      <AnimatePresence mode="wait">
+        <motion.button
+          key={theme}
+          onClick={toggleTheme}
+          className="fixed bottom-5 right-5 z-50 p-3 rounded-full backdrop-blur-md shadow-lg border border-white/20 dark:border-gray-800/50"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.3 }}
+          aria-label="Toggle dark mode"
+        >
+          {theme === "light" ? (
+            <div className="p-1 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full">
+              <Moon size={22} className="text-white" />
+            </div>
+          ) : (
+            <div className="p-1 bg-gradient-to-br from-amber-300 to-orange-500 rounded-full">
+              <Sun size={22} className="text-white" />
+            </div>
+          )}
+        </motion.button>
+      </AnimatePresence>
+      
       <main className="flex-1">
         <HeroSection />
         <ProjectsSection />
@@ -91,6 +99,7 @@ const Index = () => {
         <ExperienceSection />
         <ContactSection />
       </main>
+      
       <Footer />
     </div>
   );
